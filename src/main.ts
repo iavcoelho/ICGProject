@@ -14,7 +14,7 @@ scene.add(light);
 const loader = new GLTFLoader();
 
 loader.load(
-  "./public/models/ISS_stationary.glb",
+  "./models/ISS_stationary.glb",
   function (gltf) {
     scene.add(gltf.scene);
     gltf.scene.position.z = -21;
