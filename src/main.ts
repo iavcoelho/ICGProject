@@ -1,14 +1,9 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import SpaceModule from "./space_module.ts";
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000,
-);
 const light = new THREE.AmbientLight(0xffffff); // soft white light
 scene.add(light);
 const loader = new GLTFLoader();
@@ -27,36 +22,42 @@ loader.load(
 );
 
 const renderer = new THREE.WebGLRenderer();
+
+let zarya = new SpaceModule(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+  renderer.domElement,
+  scene,
+);
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-
-//controls.update() must be called after any manual changes to the camera's transform
-camera.position.set(0, 20, 100);
-controls.update();
-
 function animate() {
-  renderer.render(scene, camera);
+  zarya.updateControls(); // Update OrbitControls
+  renderer.render(scene, zarya.camera);
 }
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
 
 window.addEventListener("resize", () => {
   // Update sizes
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
 
   // Update camera
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
+  zarya.resizeCamera(width, height);
 
   // Update renderer
-  renderer.setSize(sizes.width, sizes.height);
+  renderer.setSize(width, height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "v") {
+    zarya.switchCamera();
+  }
 });
 
 // -- space background ------------------------------------------------------

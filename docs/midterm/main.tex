@@ -1,0 +1,46 @@
+\documentclass{report}
+\title{ISS Docking Simulator}
+\author{Igor Coelho - 113532}
+\usepackage{hyperref}
+\date{\today}
+\begin{document}
+\maketitle
+\section{URLs}
+Github Repository: \url{https://github.com/iavcoelho/ICGProject}
+
+Live Project: \url{https://iavcoelho.github.io/ICGProject}
+\section{Overview}
+The objective of this project is to make a game similar to the ISS
+Docking Simulator (https://iss-sim.spacex.com/), developed by SpaceX
+and NASA.
+In this game, there is a capsule that spawns at a random distance from
+the ISS, having equally random (within a defined interval) pitch, roll and
+yaw angles. The objective of the player is to correctly align the capsule
+with the ISS, in order to successfully dock.
+The interaction between the player can be made with keyboard, where
+different keys control the velocity of the capsule in a specific direction
+(For example, using de WASD keys to move up, down, left, right and the
+Q and E keys to accelerate/decelerate towards the ISS).
+The capsule will be able to move/rotate along all 3 axis
+\section{Objectives}
+Creation of a game similar to the one present in https://iss-sim.spacex.com/
+\begin{itemize}
+\item Have the International Space Station in Space
+\item Player is located on a separate module
+\item Player must control the module in order to dock on the ISS
+\item All axis of movement and rotation can be controlled
+\item Position,  rotation and absolute velocity must be below a threshold (to be successful)
+\end{itemize}
+\section{What is done}
+
+Currently the models have been added to the scene, the camera has been anchored to the module and the module moves up.
+There have also been placed BufferGeometries to simulate stars
+
+\section{What is missing}
+
+The movement of the module needs to be controlled by the player, which must be able to do so by a widget and by using the keyboard.
+There needs to be some widget that displays the current rotation, position and velocity values.
+Texture and environment must be added.
+The first person camera must also be added, for the user to have a 1st person view from the module.
+
+\end{document}
