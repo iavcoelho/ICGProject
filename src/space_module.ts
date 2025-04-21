@@ -3,13 +3,13 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 class SpaceModule {
-  model: THREE.Group<THREE.Object3DEventMap> | null = null;
+  private model: THREE.Group<THREE.Object3DEventMap> | null = null;
   camera: THREE.PerspectiveCamera;
-  controls: OrbitControls | null = null; // Initialize as null
+  private controls: OrbitControls | null = null; // Initialize as null
   private loader = new GLTFLoader(); // Create a single loader instance
 
-  firstPersonCamera: THREE.PerspectiveCamera;
-  thirdPersonCamera: THREE.PerspectiveCamera;
+  private firstPersonCamera: THREE.PerspectiveCamera;
+  private thirdPersonCamera: THREE.PerspectiveCamera;
 
   isFirstPerson: boolean = true;
 
@@ -96,17 +96,18 @@ class SpaceModule {
 
     this.firstPersonCamera.position
       .copy(center)
-      .add(new THREE.Vector3(0, 0, -5)); // Adjust the multiplier as needed
+      .add(new THREE.Vector3(0, 0, -6)); // Adjust the multiplier as needed
     this.firstPersonCamera.rotateX(Math.PI);
 
     this.controls?.update(); // Important to update controls after changing target and position
   }
 
-  // Methods to control the model
-  setModelPosition(x: number, y: number, z: number) {
-    if (this.model) {
-      this.model.position.set(x, y, z);
-    }
+  updatePosition(vec: THREE.Vector3) {
+    if (!this.model) return;
+    this.model.position.add(vec);
+    this.firstPersonCamera.position.add(vec);
+    this.thirdPersonCamera.position.add(vec);
+    this.controls?.target.add(vec);
   }
 
   updateControls() {

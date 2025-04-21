@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import SpaceModule from "./space_module.ts";
+import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 
 const scene = new THREE.Scene();
-const light = new THREE.AmbientLight(0xffffff); // soft white light
+const light = new THREE.AmbientLight(0x777777); // soft white light
 scene.add(light);
 const loader = new GLTFLoader();
 
@@ -36,8 +36,22 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
+new EXRLoader().load("./skybox/skybox.exr", function (texture, textureData) {
+  // memorial.exr is NPOT
+
+  console.log(textureData);
+  console.log(texture);
+  // Important: Assign the texture to scene.background
+  scene.background = texture;
+  scene.backgroundIntensity = 0.35;
+
+  // Optional: Set the texture's mapping for better skybox appearance
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+});
+
 function animate() {
   zarya.updateControls(); // Update OrbitControls
+  zarya.updatePosition(new THREE.Vector3(0, 0, 0));
   renderer.render(scene, zarya.camera);
 }
 
@@ -67,7 +81,7 @@ for (var i = 0; i < 10000; i++) {
   let y = THREE.MathUtils.randFloatSpread(2000);
   let z = THREE.MathUtils.randFloatSpread(2000);
 
-  if (x < 200 && x >= -200 && y < 200 && y >= -200 && z < 200 && z >= -200) {
+  if (x < 100 && x >= -100 && y < 100 && y >= -100 && z < 100 && z >= -100) {
     continue;
   }
 
