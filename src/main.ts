@@ -7,6 +7,11 @@ const scene = new THREE.Scene();
 const light = new THREE.AmbientLight(0x777777); // soft white light
 scene.add(light);
 const loader = new GLTFLoader();
+let shipVelocity = new THREE.Vector3(0, 0, 0);
+let shipAngularVelocity = new THREE.Vector3(0, 0, 0);
+const shipSpeed = 0.05;
+const rotationSpeed = Math.PI / 180; // 1º/s
+var clock = new THREE.Clock();
 
 loader.load(
   "./models/ISS_stationary.glb",
@@ -50,8 +55,10 @@ new EXRLoader().load("./skybox/skybox.exr", function (texture, textureData) {
 });
 
 function animate() {
+  const delta = clock.getDelta();
   zarya.updateControls(); // Update OrbitControls
-  zarya.updatePosition(new THREE.Vector3(0, 0, 0));
+  zarya.updatePosition(shipVelocity, delta);
+  zarya.updateRotation(shipAngularVelocity, delta);
   renderer.render(scene, zarya.camera);
 }
 
@@ -68,9 +75,57 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-window.addEventListener("keydown", (event) => {
+window.addEventListener("keyup", (event) => {
   if (event.key === "v") {
     zarya.switchCamera();
+  }
+
+  if (event.key === "w") {
+    shipVelocity.y += shipSpeed;
+  }
+
+  if (event.key === "s") {
+    shipVelocity.y += -shipSpeed;
+  }
+
+  if (event.key === "d") {
+    shipVelocity.x += shipSpeed;
+  }
+
+  if (event.key === "a") {
+    shipVelocity.x += -shipSpeed;
+  }
+
+  if (event.key === "q") {
+    shipVelocity.z += shipSpeed;
+  }
+
+  if (event.key === "e") {
+    shipVelocity.z += -shipSpeed;
+  }
+
+  if (event.key === "ArrowUp") {
+    shipAngularVelocity.x += rotationSpeed;
+  }
+
+  if (event.key === "ArrowDown") {
+    shipAngularVelocity.x += -rotationSpeed;
+  }
+
+  if (event.key === "ArrowRight") {
+    shipAngularVelocity.y += rotationSpeed;
+  }
+
+  if (event.key === "ArrowLeft") {
+    shipAngularVelocity.y -= rotationSpeed;
+  }
+
+  if (event.key === ".") {
+    shipAngularVelocity.z += rotationSpeed;
+  }
+
+  if (event.key === ",") {
+    shipAngularVelocity.z -= rotationSpeed;
   }
 });
 

@@ -59,6 +59,9 @@ class SpaceModule {
         scene.add(this.model);
         this.model.rotateX(Math.PI);
         this.centerCameraOnModel();
+        this.model.add(this.firstPersonCamera);
+        this.firstPersonCamera.rotateX(Math.PI);
+        this.firstPersonCamera.position.set(0, 0.2, 2);
       },
       undefined,
       function (error) {
@@ -92,22 +95,23 @@ class SpaceModule {
       .copy(center)
       .add(new THREE.Vector3(0, 0, size * 1.5)); // Adjust the multiplier as needed
     this.thirdPersonCamera.lookAt(center);
-    this.firstPersonCamera.lookAt(center);
-
-    this.firstPersonCamera.position
-      .copy(center)
-      .add(new THREE.Vector3(0, 0, -6)); // Adjust the multiplier as needed
-    this.firstPersonCamera.rotateX(Math.PI);
 
     this.controls?.update(); // Important to update controls after changing target and position
   }
 
-  updatePosition(vec: THREE.Vector3) {
+  updatePosition(vec: THREE.Vector3, delta: number) {
     if (!this.model) return;
-    this.model.position.add(vec);
-    this.firstPersonCamera.position.add(vec);
-    this.thirdPersonCamera.position.add(vec);
-    this.controls?.target.add(vec);
+    const delta_vec = new THREE.Vector3().copy(vec).multiplyScalar(delta);
+    this.model.position.add(delta_vec);
+    this.thirdPersonCamera.position.add(delta_vec);
+    this.controls?.target.add(delta_vec);
+  }
+
+  updateRotation(vec: THREE.Vector3, delta: number) {
+    if (!this.model) return;
+    this.model.rotateX(vec.x * delta);
+    this.model.rotateY(vec.y * delta);
+    this.model.rotateZ(vec.z * delta);
   }
 
   updateControls() {
