@@ -4,12 +4,12 @@ import SpaceModule from "./space_module.ts";
 import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 
 const scene = new THREE.Scene();
-const light = new THREE.AmbientLight(0x777777); // soft white light
+const light = new THREE.AmbientLight(0xffffff); // soft white light
 scene.add(light);
 const loader = new GLTFLoader();
 let shipVelocity = new THREE.Vector3(0, 0, 0);
 let shipAngularVelocity = new THREE.Vector3(0, 0, 0);
-const shipSpeed = 0.05;
+const shipSpeed = 0.1;
 const rotationSpeed = Math.PI / 180; // 1º/s
 var clock = new THREE.Clock();
 
@@ -59,6 +59,7 @@ function animate() {
   zarya.updateControls(); // Update OrbitControls
   zarya.updatePosition(shipVelocity, delta);
   zarya.updateRotation(shipAngularVelocity, delta);
+  updateHud();
   renderer.render(scene, zarya.camera);
 }
 
@@ -74,6 +75,54 @@ window.addEventListener("resize", () => {
   renderer.setSize(width, height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
+document.getElementById("translate-up-button")!.onclick = () => {
+  shipVelocity.y += shipSpeed;
+};
+
+document.getElementById("translate-down-button")!.onclick = () => {
+  shipVelocity.y -= shipSpeed;
+};
+
+document.getElementById("translate-left-button")!.onclick = () => {
+  shipVelocity.x -= shipSpeed;
+};
+
+document.getElementById("translate-right-button")!.onclick = () => {
+  shipVelocity.x += shipSpeed;
+};
+
+document.getElementById("translate-forward-button")!.onclick = () => {
+  shipVelocity.z -= shipSpeed;
+};
+
+document.getElementById("translate-backward-button")!.onclick = () => {
+  shipVelocity.z += shipSpeed;
+};
+
+document.getElementById("pitch-up-button")!.onclick = () => {
+  shipAngularVelocity.x += rotationSpeed;
+};
+
+document.getElementById("pitch-down-button")!.onclick = () => {
+  shipAngularVelocity.x -= rotationSpeed;
+};
+
+document.getElementById("roll-left-button")!.onclick = () => {
+  shipAngularVelocity.z -= rotationSpeed;
+};
+
+document.getElementById("roll-right-button")!.onclick = () => {
+  shipAngularVelocity.z += rotationSpeed;
+};
+
+document.getElementById("yaw-left-button")!.onclick = () => {
+  shipAngularVelocity.y -= rotationSpeed;
+};
+
+document.getElementById("yaw-right-button")!.onclick = () => {
+  shipAngularVelocity.y += rotationSpeed;
+};
 
 window.addEventListener("keyup", (event) => {
   if (event.key === "v") {
@@ -128,6 +177,22 @@ window.addEventListener("keyup", (event) => {
     shipAngularVelocity.z -= rotationSpeed;
   }
 });
+
+function updateHud() {
+  document.getElementById("pitch_rate")!.innerText =
+    `${shipAngularVelocity.x.toFixed(2)} °/s`;
+
+  document.getElementById("yaw_rate")!.innerText =
+    `${shipAngularVelocity.y.toFixed(2)} °/s`;
+
+  document.getElementById("roll_rate")!.innerText =
+    `${shipAngularVelocity.z.toFixed(2)} °/s`;
+
+  document.getElementById("rate_rate")!.innerText =
+    `${shipVelocity.length().toFixed(2)} m/s`;
+
+  zarya.updateHud();
+}
 
 // -- space background ------------------------------------------------------
 var stars = new Array(0);

@@ -10,6 +10,7 @@ class SpaceModule {
 
   private firstPersonCamera: THREE.PerspectiveCamera;
   private thirdPersonCamera: THREE.PerspectiveCamera;
+  private shipVelocity = new THREE.Vector3();
 
   isFirstPerson: boolean = true;
 
@@ -101,7 +102,7 @@ class SpaceModule {
 
   updatePosition(vec: THREE.Vector3, delta: number) {
     if (!this.model) return;
-    const delta_vec = new THREE.Vector3().copy(vec).multiplyScalar(delta);
+    const delta_vec = this.shipVelocity.copy(vec).multiplyScalar(delta);
     this.model.position.add(delta_vec);
     this.thirdPersonCamera.position.add(delta_vec);
     this.controls?.target.add(delta_vec);
@@ -123,6 +124,38 @@ class SpaceModule {
     this.thirdPersonCamera.aspect = width / height;
     this.firstPersonCamera.updateProjectionMatrix();
     this.thirdPersonCamera.updateProjectionMatrix();
+  }
+
+  updateHud() {
+    if (!this.model) return;
+    document.getElementById("pitch_error")!.innerText = (
+      ((this.model.rotation.x * 180) / Math.PI + 180) %
+      180
+    ).toFixed(2);
+    document.getElementById("yaw_error")!.innerText = (
+      (this.model.rotation.y * 180) /
+      Math.PI
+    ).toFixed(2);
+    document.getElementById("roll_error")!.innerText = (
+      (this.model.rotation.z * 180) /
+      Math.PI
+    ).toFixed(2);
+
+    document.getElementById("x_distance")!.innerText = `${(
+      this.model.position.x - 0.01
+    ).toFixed(2)} m`;
+
+    document.getElementById("y_distance")!.innerText = `${(
+      this.model.position.y - 0.15
+    ).toFixed(2)} m`;
+
+    document.getElementById("z_distance")!.innerText = `${(
+      this.model.position.z - 2.1
+    ).toFixed(2)} m`;
+
+    document.getElementById("range_rate")!.innerText = `${this.model.position
+      .distanceTo(new THREE.Vector3(0.01, 0.15, 2.1))
+      .toFixed(2)} m`;
   }
 }
 
