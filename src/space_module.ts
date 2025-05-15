@@ -36,7 +36,7 @@ class SpaceModule {
       far,
     );
 
-    this.camera = this.thirdPersonCamera;
+    this.camera = this.firstPersonCamera;
     this.camera.position.set(0, 0, 5); // Adjust initial camera position
 
     this.controls = new OrbitControls(
@@ -54,11 +54,15 @@ class SpaceModule {
       "./models/zarya.glb",
       (gltf) => {
         this.model = gltf.scene;
-        this.model.position.z = 5;
+        this.model.position.x = Math.random() * 40 - 20;
+        this.model.position.y = Math.random() * 40 - 20;
+        this.model.position.z = Math.random() * 100 + 50;
         console.log("The zarya model has been loaded");
         // You might want to perform initial model adjustments here
         scene.add(this.model);
-        this.model.rotateX(Math.PI);
+        this.model.rotateX(Math.random() * 0.4 - 0.2);
+        this.model.rotateY(Math.random() * 0.4 - 0.2 + Math.PI);
+        this.model.rotateZ(Math.random() * 0.4 - 0.2);
         this.centerCameraOnModel();
         this.model.add(this.firstPersonCamera);
         this.firstPersonCamera.rotateX(Math.PI);
@@ -128,25 +132,26 @@ class SpaceModule {
 
   updateHud() {
     if (!this.model) return;
-    document.getElementById("pitch_error")!.innerText = (
-      ((this.model.rotation.x * 180) / Math.PI + 180) %
-      180
-    ).toFixed(2);
-    document.getElementById("yaw_error")!.innerText = (
+    let pitch = (this.model.rotation.x * 180) / Math.PI;
+    pitch = (pitch - 180 + 360) % 360;
+    if (pitch > 180) pitch -= 360;
+    pitch = Math.max(-90, Math.min(90, pitch));
+    document.getElementById("pitch_error")!.innerText = `${pitch.toFixed(1)} °`;
+    document.getElementById("yaw_error")!.innerText = `${(
       (this.model.rotation.y * 180) /
       Math.PI
-    ).toFixed(2);
-    document.getElementById("roll_error")!.innerText = (
+    ).toFixed(1)} °`;
+    document.getElementById("roll_error")!.innerText = `${(
       (this.model.rotation.z * 180) /
       Math.PI
-    ).toFixed(2);
+    ).toFixed(1)} °`;
 
     document.getElementById("x_distance")!.innerText = `${(
       this.model.position.x - 0.01
     ).toFixed(2)} m`;
 
     document.getElementById("y_distance")!.innerText = `${(
-      this.model.position.y - 0.15
+      this.model.position.y - 0.21
     ).toFixed(2)} m`;
 
     document.getElementById("z_distance")!.innerText = `${(
