@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script type="module" src="/src/main.ts"></script>
     <style>
       * {
         margin: 0;
@@ -20,7 +21,40 @@
     <title>Playground</title>
   </head>
   <body>
-    <div id="options" style="opacity: 1; visibility: inherit;">
+    <dialog id="win-modal" class="newModal">
+        <div style="color: #ffffff; display:flex; align-items: center; justify-content:center; height:100%; flex-direction: column;">
+        <span style="font-size: 16rem; height:16rem;">You won!</span>
+        <button style="height: 4rem; font-size: 2rem; padding: 0.25em;" id="closeWin">
+        Play Again!
+        </div>
+    </dialog>
+
+    <dialog id="lose-modal" class="newModal">
+        <div style="color: #ffffff; display:flex; align-items: center; justify-content:center; height:100%; flex-direction: column;">
+        <span style="font-size: 16rem; height:16rem;">You crashed into the station!</span>
+        <button id="closeLose" style="height: 4rem; font-size: 2rem; padding: 0.25em;">
+        Retry!
+      </button>
+        </div>
+    </dialog>
+
+    <dialog id="instructions" class="newModal" >
+        <div style="color: #ffffff; display:flex; align-items: center; justify-content:center; height:100%; flex-direction: column;">
+        <p style="font-size: 16rem; height:16rem;">
+          The controls on the left side translate the spaceship in space. You can also use the W, A, S, D, Q and E keys to move the ship.
+          The controls on the right rotate the ship on itself. You can also use the Arrows, the ',' key and the '.' key to rotate it.
+          You win the game when you can get all the numbers on the screen under 0.2.
+          You can press 'V' to get a third person view of the ship.
+        </p>
+        <button style="height: 4rem; font-size: 2rem; padding: 0.25em;" onclick="document.getElementById('instructions').open = false">close modal</button>
+        </div>
+    </dialog>
+    <script>
+      function openInstruction() {
+        document.getElementById("instructions").open = true
+      }
+    </script>
+    <div id="options" style="opacity: 1; visibility: inherit;" onclick="openInstruction()">
       <div id="option-instructions" title="Instructions" class="icon">?</div>
     </div>
 <div id="hud" class="noselect" style="opacity: 1; visibility: inherit;">
@@ -751,6 +785,5 @@
         <div class="triangle" id="triangle3"></div>
         <div class="triangle" id="triangle4"></div>
       </div>
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

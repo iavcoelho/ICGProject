@@ -12,6 +12,8 @@ let shipAngularVelocity = new THREE.Vector3(0, 0, 0);
 const shipSpeed = 0.1;
 const rotationSpeed = Math.PI / 180; // 1º/s
 var clock = new THREE.Clock();
+let winModal: any = <any>document.getElementById("win-modal");
+let loseModal: any = document.getElementById("lose-modal");
 
 loader.load(
   "./models/ISS_stationary.glb",
@@ -60,6 +62,40 @@ function animate() {
   zarya.updatePosition(shipVelocity, delta);
   zarya.updateRotation(shipAngularVelocity, delta);
   updateHud();
+  const position = zarya.getPosition();
+  const rotation = zarya.getRotation();
+  let positionZero = false;
+  let rotationZero = false;
+  if (position) {
+    positionZero = position.x - 0.01 <= 0.1;
+    positionZero = positionZero && position.y - 0.21 <= 0.1;
+    positionZero = positionZero && position.z - 2.1 <= 0.1;
+
+    if (
+      position.z - 2.1 < 0 &&
+      (position.x - 0.01 < 0 || position.y - 0.21 < 0)
+    ) {
+      console.log("wasted because it is inside the station");
+    }
+  }
+
+  if (rotation) {
+    rotationZero = rotation.x <= 0.1;
+    rotationZero = rotationZero && rotation.y <= 0.1;
+    rotationZero = rotationZero && rotation.z <= 0.1;
+  }
+
+  if (positionZero && rotation) {
+    if (shipVelocity.length() <= 0.2) {
+      console.log("victory");
+      winModal.open = true;
+      shipVelocity = new THREE.Vector3(0, 0, 0);
+    } else {
+      console.log("wasted for being a speedy boii");
+      loseModal.open = true;
+    }
+  }
+
   renderer.render(scene, zarya.camera);
 }
 
@@ -215,3 +251,15 @@ starsGeometry.setAttribute(
 var starsMaterial = new THREE.PointsMaterial({ color: 0xdddddd });
 var starField = new THREE.Points(starsGeometry, starsMaterial);
 scene.add(starField);
+
+let closeWinBtn: any = document.getElementById("closeWin");
+closeWinBtn.onclick = () => {
+  winModal.open = false;
+  zarya.playAgain();
+};
+
+let closeLoseBtn: any = document.getElementById("closeLose");
+closeLoseBtn.onclick = () => {
+  loseModal.open = false;
+  zarya.playAgain();
+};
