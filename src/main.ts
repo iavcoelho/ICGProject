@@ -90,9 +90,12 @@ function animate() {
       console.log("victory");
       winModal.open = true;
       shipVelocity = new THREE.Vector3(0, 0, 0);
+      shipAngularVelocity = new THREE.Vector3(0, 0, 0);
     } else {
       console.log("wasted for being a speedy boii");
       loseModal.open = true;
+      shipVelocity = new THREE.Vector3(0, 0, 0);
+      shipAngularVelocity = new THREE.Vector3(0, 0, 0);
     }
   }
 

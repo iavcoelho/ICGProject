@@ -54,15 +54,10 @@ class SpaceModule {
       "./models/zarya.glb",
       (gltf) => {
         this.model = gltf.scene;
-        this.model.position.x = Math.random() * 4 - 2;
-        this.model.position.y = Math.random() * 4 - 2;
-        this.model.position.z = Math.random() * 10 + 5;
         console.log("The zarya model has been loaded");
         // You might want to perform initial model adjustments here
+        this.playAgain();
         scene.add(this.model);
-        this.model.rotateX(Math.random() * 0.4 - 0.2);
-        this.model.rotateY(Math.random() * 0.4 - 0.2 + Math.PI);
-        this.model.rotateZ(Math.random() * 0.4 - 0.2 + Math.PI);
         this.centerCameraOnModel();
         this.model.add(this.firstPersonCamera);
         this.firstPersonCamera.rotateX(Math.PI);
@@ -173,9 +168,9 @@ class SpaceModule {
 
   playAgain() {
     if (!this.model) return;
-    this.model.position.x = Math.random() * 4 - 2;
-    this.model.position.y = Math.random() * 4 - 2;
-    this.model.position.z = Math.random() * 10 + 5;
+    this.model.position.x = Math.random() * 40 - 2;
+    this.model.position.y = Math.random() * 40 - 2;
+    this.model.position.z = Math.random() * 100 + 5;
 
     this.model.rotateX(Math.random() * 0.4 - 0.2);
     this.model.rotateY(Math.random() * 0.4 - 0.2 + Math.PI);
